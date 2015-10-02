@@ -4,157 +4,156 @@ local ffi = require'ffi'
 
 ffi.cdef[[
 enum SoundIoError {
-    SoundIoErrorNone,
-    SoundIoErrorNoMem,
-    SoundIoErrorInitAudioBackend,
-    SoundIoErrorSystemResources,
-    SoundIoErrorOpeningDevice,
-    SoundIoErrorNoSuchDevice,
-    SoundIoErrorInvalid,
-    SoundIoErrorBackendUnavailable,
-    SoundIoErrorStreaming,
-    SoundIoErrorIncompatibleDevice,
-    SoundIoErrorNoSuchClient,
-    SoundIoErrorIncompatibleBackend,
-    SoundIoErrorBackendDisconnected,
-    SoundIoErrorInterrupted,
-    SoundIoErrorUnderflow,
-    SoundIoErrorEncodingString,
+	SoundIoErrorNone,
+	SoundIoErrorNoMem,
+	SoundIoErrorInitAudioBackend,
+	SoundIoErrorSystemResources,
+	SoundIoErrorOpeningDevice,
+	SoundIoErrorNoSuchDevice,
+	SoundIoErrorInvalid,
+	SoundIoErrorBackendUnavailable,
+	SoundIoErrorStreaming,
+	SoundIoErrorIncompatibleDevice,
+	SoundIoErrorNoSuchClient,
+	SoundIoErrorIncompatibleBackend,
+	SoundIoErrorBackendDisconnected,
+	SoundIoErrorInterrupted,
+	SoundIoErrorUnderflow,
+	SoundIoErrorEncodingString,
 };
 enum SoundIoChannelId {
-    SoundIoChannelIdInvalid,
-    SoundIoChannelIdFrontLeft, // First of the more commonly supported ids.
-    SoundIoChannelIdFrontRight,
-    SoundIoChannelIdFrontCenter,
-    SoundIoChannelIdLfe,
-    SoundIoChannelIdBackLeft,
-    SoundIoChannelIdBackRight,
-    SoundIoChannelIdFrontLeftCenter,
-    SoundIoChannelIdFrontRightCenter,
-    SoundIoChannelIdBackCenter,
-    SoundIoChannelIdSideLeft,
-    SoundIoChannelIdSideRight,
-    SoundIoChannelIdTopCenter,
-    SoundIoChannelIdTopFrontLeft,
-    SoundIoChannelIdTopFrontCenter,
-    SoundIoChannelIdTopFrontRight,
-    SoundIoChannelIdTopBackLeft,
-    SoundIoChannelIdTopBackCenter,
-    SoundIoChannelIdTopBackRight, // Last of the more commonly supported ids.
-    SoundIoChannelIdBackLeftCenter, // First of the less commonly supported ids.
-    SoundIoChannelIdBackRightCenter,
-    SoundIoChannelIdFrontLeftWide,
-    SoundIoChannelIdFrontRightWide,
-    SoundIoChannelIdFrontLeftHigh,
-    SoundIoChannelIdFrontCenterHigh,
-    SoundIoChannelIdFrontRightHigh,
-    SoundIoChannelIdTopFrontLeftCenter,
-    SoundIoChannelIdTopFrontRightCenter,
-    SoundIoChannelIdTopSideLeft,
-    SoundIoChannelIdTopSideRight,
-    SoundIoChannelIdLeftLfe,
-    SoundIoChannelIdRightLfe,
-    SoundIoChannelIdLfe2,
-    SoundIoChannelIdBottomCenter,
-    SoundIoChannelIdBottomLeftCenter,
-    SoundIoChannelIdBottomRightCenter,
-    SoundIoChannelIdMsMid,
-    SoundIoChannelIdMsSide,
-    SoundIoChannelIdAmbisonicW,
-    SoundIoChannelIdAmbisonicX,
-    SoundIoChannelIdAmbisonicY,
-    SoundIoChannelIdAmbisonicZ,
-    SoundIoChannelIdXyX,
-    SoundIoChannelIdXyY,
-    SoundIoChannelIdHeadphonesLeft, // First of the "other" channel ids
-    SoundIoChannelIdHeadphonesRight,
-    SoundIoChannelIdClickTrack,
-    SoundIoChannelIdForeignLanguage,
-    SoundIoChannelIdHearingImpaired,
-    SoundIoChannelIdNarration,
-    SoundIoChannelIdHaptic,
-    SoundIoChannelIdDialogCentricMix, // Last of the "other" channel ids
-    SoundIoChannelIdAux,
-    SoundIoChannelIdAux0,
-    SoundIoChannelIdAux1,
-    SoundIoChannelIdAux2,
-    SoundIoChannelIdAux3,
-    SoundIoChannelIdAux4,
-    SoundIoChannelIdAux5,
-    SoundIoChannelIdAux6,
-    SoundIoChannelIdAux7,
-    SoundIoChannelIdAux8,
-    SoundIoChannelIdAux9,
-    SoundIoChannelIdAux10,
-    SoundIoChannelIdAux11,
-    SoundIoChannelIdAux12,
-    SoundIoChannelIdAux13,
-    SoundIoChannelIdAux14,
-    SoundIoChannelIdAux15,
+	SoundIoChannelIdInvalid,
+	SoundIoChannelIdFrontLeft, // First of the more commonly supported ids.
+	SoundIoChannelIdFrontRight,
+	SoundIoChannelIdFrontCenter,
+	SoundIoChannelIdLfe,
+	SoundIoChannelIdBackLeft,
+	SoundIoChannelIdBackRight,
+	SoundIoChannelIdFrontLeftCenter,
+	SoundIoChannelIdFrontRightCenter,
+	SoundIoChannelIdBackCenter,
+	SoundIoChannelIdSideLeft,
+	SoundIoChannelIdSideRight,
+	SoundIoChannelIdTopCenter,
+	SoundIoChannelIdTopFrontLeft,
+	SoundIoChannelIdTopFrontCenter,
+	SoundIoChannelIdTopFrontRight,
+	SoundIoChannelIdTopBackLeft,
+	SoundIoChannelIdTopBackCenter,
+	SoundIoChannelIdTopBackRight, // Last of the more commonly supported ids.
+	SoundIoChannelIdBackLeftCenter, // First of the less commonly supported ids.
+	SoundIoChannelIdBackRightCenter,
+	SoundIoChannelIdFrontLeftWide,
+	SoundIoChannelIdFrontRightWide,
+	SoundIoChannelIdFrontLeftHigh,
+	SoundIoChannelIdFrontCenterHigh,
+	SoundIoChannelIdFrontRightHigh,
+	SoundIoChannelIdTopFrontLeftCenter,
+	SoundIoChannelIdTopFrontRightCenter,
+	SoundIoChannelIdTopSideLeft,
+	SoundIoChannelIdTopSideRight,
+	SoundIoChannelIdLeftLfe,
+	SoundIoChannelIdRightLfe,
+	SoundIoChannelIdLfe2,
+	SoundIoChannelIdBottomCenter,
+	SoundIoChannelIdBottomLeftCenter,
+	SoundIoChannelIdBottomRightCenter,
+	SoundIoChannelIdMsMid,
+	SoundIoChannelIdMsSide,
+	SoundIoChannelIdAmbisonicW,
+	SoundIoChannelIdAmbisonicX,
+	SoundIoChannelIdAmbisonicY,
+	SoundIoChannelIdAmbisonicZ,
+	SoundIoChannelIdXyX,
+	SoundIoChannelIdXyY,
+	SoundIoChannelIdHeadphonesLeft, // First of the "other" channel ids
+	SoundIoChannelIdHeadphonesRight,
+	SoundIoChannelIdClickTrack,
+	SoundIoChannelIdForeignLanguage,
+	SoundIoChannelIdHearingImpaired,
+	SoundIoChannelIdNarration,
+	SoundIoChannelIdHaptic,
+	SoundIoChannelIdDialogCentricMix, // Last of the "other" channel ids
+	SoundIoChannelIdAux,
+	SoundIoChannelIdAux0,
+	SoundIoChannelIdAux1,
+	SoundIoChannelIdAux2,
+	SoundIoChannelIdAux3,
+	SoundIoChannelIdAux4,
+	SoundIoChannelIdAux5,
+	SoundIoChannelIdAux6,
+	SoundIoChannelIdAux7,
+	SoundIoChannelIdAux8,
+	SoundIoChannelIdAux9,
+	SoundIoChannelIdAux10,
+	SoundIoChannelIdAux11,
+	SoundIoChannelIdAux12,
+	SoundIoChannelIdAux13,
+	SoundIoChannelIdAux14,
+	SoundIoChannelIdAux15,
 };
 enum SoundIoChannelLayoutId {
-    SoundIoChannelLayoutIdMono,
-    SoundIoChannelLayoutIdStereo,
-    SoundIoChannelLayoutId2Point1,
-    SoundIoChannelLayoutId3Point0,
-    SoundIoChannelLayoutId3Point0Back,
-    SoundIoChannelLayoutId3Point1,
-    SoundIoChannelLayoutId4Point0,
-    SoundIoChannelLayoutIdQuad,
-    SoundIoChannelLayoutIdQuadSide,
-    SoundIoChannelLayoutId4Point1,
-    SoundIoChannelLayoutId5Point0Back,
-    SoundIoChannelLayoutId5Point0Side,
-    SoundIoChannelLayoutId5Point1,
-    SoundIoChannelLayoutId5Point1Back,
-    SoundIoChannelLayoutId6Point0Side,
-    SoundIoChannelLayoutId6Point0Front,
-    SoundIoChannelLayoutIdHexagonal,
-    SoundIoChannelLayoutId6Point1,
-    SoundIoChannelLayoutId6Point1Back,
-    SoundIoChannelLayoutId6Point1Front,
-    SoundIoChannelLayoutId7Point0,
-    SoundIoChannelLayoutId7Point0Front,
-    SoundIoChannelLayoutId7Point1,
-    SoundIoChannelLayoutId7Point1Wide,
-    SoundIoChannelLayoutId7Point1WideBack,
-    SoundIoChannelLayoutIdOctagonal,
+	SoundIoChannelLayoutIdMono,
+	SoundIoChannelLayoutIdStereo,
+	SoundIoChannelLayoutId2Point1,
+	SoundIoChannelLayoutId3Point0,
+	SoundIoChannelLayoutId3Point0Back,
+	SoundIoChannelLayoutId3Point1,
+	SoundIoChannelLayoutId4Point0,
+	SoundIoChannelLayoutIdQuad,
+	SoundIoChannelLayoutIdQuadSide,
+	SoundIoChannelLayoutId4Point1,
+	SoundIoChannelLayoutId5Point0Back,
+	SoundIoChannelLayoutId5Point0Side,
+	SoundIoChannelLayoutId5Point1,
+	SoundIoChannelLayoutId5Point1Back,
+	SoundIoChannelLayoutId6Point0Side,
+	SoundIoChannelLayoutId6Point0Front,
+	SoundIoChannelLayoutIdHexagonal,
+	SoundIoChannelLayoutId6Point1,
+	SoundIoChannelLayoutId6Point1Back,
+	SoundIoChannelLayoutId6Point1Front,
+	SoundIoChannelLayoutId7Point0,
+	SoundIoChannelLayoutId7Point0Front,
+	SoundIoChannelLayoutId7Point1,
+	SoundIoChannelLayoutId7Point1Wide,
+	SoundIoChannelLayoutId7Point1WideBack,
+	SoundIoChannelLayoutIdOctagonal,
 };
 enum SoundIoBackend {
-    SoundIoBackendNone,
-    SoundIoBackendJack,
-    SoundIoBackendPulseAudio,
-    SoundIoBackendAlsa,
-    SoundIoBackendCoreAudio,
-    SoundIoBackendWasapi,
-    SoundIoBackendDummy,
+	SoundIoBackendNone,
+	SoundIoBackendJack,
+	SoundIoBackendPulseAudio,
+	SoundIoBackendAlsa,
+	SoundIoBackendCoreAudio,
+	SoundIoBackendWasapi,
+	SoundIoBackendDummy,
 };
 enum SoundIoDeviceAim {
-    SoundIoDeviceAimInput,  // capture / recording
-    SoundIoDeviceAimOutput, // playback
+	SoundIoDeviceAimInput,  // capture / recording
+	SoundIoDeviceAimOutput, // playback
 };
 enum SoundIoFormat {
-    SoundIoFormatInvalid,
-    SoundIoFormatS8,        // Signed 8 bit
-    SoundIoFormatU8,        // Unsigned 8 bit
-    SoundIoFormatS16LE,     // Signed 16 bit Little Endian
-    SoundIoFormatS16BE,     // Signed 16 bit Big Endian
-    SoundIoFormatU16LE,     // Unsigned 16 bit Little Endian
-    SoundIoFormatU16BE,     // Unsigned 16 bit Little Endian
-    SoundIoFormatS24LE,     // Signed 24 bit Little Endian using low three bytes in 32-bit word
-    SoundIoFormatS24BE,     // Signed 24 bit Big Endian using low three bytes in 32-bit word
-    SoundIoFormatU24LE,     // Unsigned 24 bit Little Endian using low three bytes in 32-bit word
-    SoundIoFormatU24BE,     // Unsigned 24 bit Big Endian using low three bytes in 32-bit word
-    SoundIoFormatS32LE,     // Signed 32 bit Little Endian
-    SoundIoFormatS32BE,     // Signed 32 bit Big Endian
-    SoundIoFormatU32LE,     // Unsigned 32 bit Little Endian
-    SoundIoFormatU32BE,     // Unsigned 32 bit Big Endian
-    SoundIoFormatFloat32LE, // Float 32 bit Little Endian, Range -1.0 to 1.0
-    SoundIoFormatFloat32BE, // Float 32 bit Big Endian, Range -1.0 to 1.0
-    SoundIoFormatFloat64LE, // Float 64 bit Little Endian, Range -1.0 to 1.0
-    SoundIoFormatFloat64BE, // Float 64 bit Big Endian, Range -1.0 to 1.0
+	SoundIoFormatInvalid,
+	SoundIoFormatS8,        // Signed 8 bit
+	SoundIoFormatU8,        // Unsigned 8 bit
+	SoundIoFormatS16LE,     // Signed 16 bit Little Endian
+	SoundIoFormatS16BE,     // Signed 16 bit Big Endian
+	SoundIoFormatU16LE,     // Unsigned 16 bit Little Endian
+	SoundIoFormatU16BE,     // Unsigned 16 bit Little Endian
+	SoundIoFormatS24LE,     // Signed 24 bit Little Endian using low three bytes in 32-bit word
+	SoundIoFormatS24BE,     // Signed 24 bit Big Endian using low three bytes in 32-bit word
+	SoundIoFormatU24LE,     // Unsigned 24 bit Little Endian using low three bytes in 32-bit word
+	SoundIoFormatU24BE,     // Unsigned 24 bit Big Endian using low three bytes in 32-bit word
+	SoundIoFormatS32LE,     // Signed 32 bit Little Endian
+	SoundIoFormatS32BE,     // Signed 32 bit Big Endian
+	SoundIoFormatU32LE,     // Unsigned 32 bit Little Endian
+	SoundIoFormatU32BE,     // Unsigned 32 bit Big Endian
+	SoundIoFormatFloat32LE, // Float 32 bit Little Endian, Range -1.0 to 1.0
+	SoundIoFormatFloat32BE, // Float 32 bit Big Endian, Range -1.0 to 1.0
+	SoundIoFormatFloat64LE, // Float 64 bit Little Endian, Range -1.0 to 1.0
+	SoundIoFormatFloat64BE, // Float 64 bit Big Endian, Range -1.0 to 1.0
 };
-
 enum {
 	SoundIoFormatS16NE     = SoundIoFormatS16LE,
 	SoundIoFormatU16NE     = SoundIoFormatU16LE,
@@ -177,82 +176,88 @@ enum {
 	SOUNDIO_MAX_CHANNELS = 24,
 };
 struct SoundIoChannelLayout {
-    const char *name;
-    int channel_count;
-    enum SoundIoChannelId channels[SOUNDIO_MAX_CHANNELS];
+	const char *name;
+	int channel_count;
+	enum SoundIoChannelId channels[SOUNDIO_MAX_CHANNELS];
 };
 struct SoundIoSampleRateRange {
-    int min;
-    int max;
+	int min;
+	int max;
 };
 struct SoundIoChannelArea {
-    char *ptr;
-    int step;
+	char *ptr;
+	int step;
 };
 struct SoundIo {
-    void *userdata;
-    void (*on_devices_change)(struct SoundIo *);
-    void (*on_backend_disconnect)(struct SoundIo *, int err);
-    void (*on_events_signal)(struct SoundIo *);
-    enum SoundIoBackend current_backend;
-    const char *app_name;
-    void (*emit_rtprio_warning)(void);
-    void (*jack_info_callback)(const char *msg);
-    void (*jack_error_callback)(const char *msg);
+	void *userdata;
+	void (*on_devices_change)(struct SoundIo *);
+	void (*on_backend_disconnect)(struct SoundIo *, int err);
+	void (*on_events_signal)(struct SoundIo *);
+	enum SoundIoBackend current_backend;
+	const char *app_name;
+	void (*emit_rtprio_warning)(void);
+	void (*jack_info_callback)(const char *msg);
+	void (*jack_error_callback)(const char *msg);
 };
 struct SoundIoDevice {
-    struct SoundIo *soundio;
-    char *id;
-    char *name;
-    enum SoundIoDeviceAim aim;
-    struct SoundIoChannelLayout *layouts;
-    int layout_count;
-    struct SoundIoChannelLayout current_layout;
-    enum SoundIoFormat *formats;
-    int format_count;
-    enum SoundIoFormat current_format;
-    struct SoundIoSampleRateRange *sample_rates;
-    int sample_rate_count;
-    int sample_rate_current;
-    double software_latency_min;
-    double software_latency_max;
-    double software_latency_current;
-    bool is_raw;
-    int ref_count;
-    int probe_error;
+	struct SoundIo *soundio;
+	char *id;
+	char *name;
+	enum SoundIoDeviceAim aim;
+	struct SoundIoChannelLayout *layouts;
+	int layout_count;
+	struct SoundIoChannelLayout current_layout;
+	enum SoundIoFormat *formats;
+	int format_count;
+	enum SoundIoFormat current_format;
+	struct SoundIoSampleRateRange *sample_rates;
+	int sample_rate_count;
+	int sample_rate_current;
+	double software_latency_min;
+	double software_latency_max;
+	double software_latency_current;
+	bool is_raw;
+	int ref_count;
+	int probe_error;
 };
+typedef void (*SoundIoErrorCallback)(struct SoundIoOutStream *, int err);
+typedef void (*SoundIoWriteCallback)(struct SoundIoOutStream *,
+		int frame_count_min, int frame_count_max);
+typedef void (*SoundIoUnderflowCallback)(struct SoundIoOutStream *);
 struct SoundIoOutStream {
-    struct SoundIoDevice *device;
-    enum SoundIoFormat format;
-    int sample_rate;
-    struct SoundIoChannelLayout layout;
-    double software_latency;
-    void *userdata;
-    void (*write_callback)(struct SoundIoOutStream *,
-            int frame_count_min, int frame_count_max);
-    void (*underflow_callback)(struct SoundIoOutStream *);
-    void (*error_callback)(struct SoundIoOutStream *, int err);
-    const char *name;
-    bool non_terminal_hint;
-    int bytes_per_frame;
-    int bytes_per_sample;
-    int layout_error;
+	struct SoundIoDevice *device;
+	enum SoundIoFormat format;
+	int sample_rate;
+	struct SoundIoChannelLayout layout;
+	double software_latency;
+	void *userdata;
+	SoundIoWriteCallback write_callback;
+	SoundIoUnderflowCallback underflow_callback;
+	SoundIoErrorCallback error_callback;
+	const char *name;
+	bool non_terminal_hint;
+	int bytes_per_frame;
+	int bytes_per_sample;
+	int layout_error;
 };
+typedef void (*SoundIoReadCallback)(struct SoundIoInStream *,
+	int frame_count_min, int frame_count_max);
+typedef void (*SoundIoOverflowCallback)(struct SoundIoOutStream *);
 struct SoundIoInStream {
-    struct SoundIoDevice *device;
-    enum SoundIoFormat format;
-    int sample_rate;
-    struct SoundIoChannelLayout layout;
-    double software_latency;
-    void *userdata;
-    void (*read_callback)(struct SoundIoInStream *, int frame_count_min, int frame_count_max);
-    void (*overflow_callback)(struct SoundIoInStream *);
-    void (*error_callback)(struct SoundIoInStream *, int err);
-    const char *name;
-    bool non_terminal_hint;
-    int bytes_per_frame;
-    int bytes_per_sample;
-    int layout_error;
+	struct SoundIoDevice *device;
+	enum SoundIoFormat format;
+	int sample_rate;
+	struct SoundIoChannelLayout layout;
+	double software_latency;
+	void *userdata;
+	SoundIoReadCallback read_callback;
+	SoundIoOverflowCallback overflow_callback;
+	SoundIoErrorCallback error_callback;
+	const char *name;
+	bool non_terminal_hint;
+	int bytes_per_frame;
+	int bytes_per_sample;
+	int layout_error;
 };
 struct SoundIo *soundio_create(void);
 void soundio_destroy(struct SoundIo *soundio);
@@ -284,14 +289,6 @@ const struct SoundIoChannelLayout *soundio_best_matching_channel_layout(
         const struct SoundIoChannelLayout *available_layouts, int available_layout_count);
 void soundio_sort_channel_layouts(struct SoundIoChannelLayout *layouts, int layout_count);
 int soundio_get_bytes_per_sample(enum SoundIoFormat format);
-static inline int soundio_get_bytes_per_frame(enum SoundIoFormat format, int channel_count) {
-    return soundio_get_bytes_per_sample(format) * channel_count;
-}
-static inline int soundio_get_bytes_per_second(enum SoundIoFormat format,
-        int channel_count, int sample_rate)
-{
-    return soundio_get_bytes_per_frame(format, channel_count) * sample_rate;
-}
 const char * soundio_format_string(enum SoundIoFormat format);
 int soundio_input_device_count(struct SoundIo *soundio);
 int soundio_output_device_count(struct SoundIo *soundio);
@@ -345,4 +342,15 @@ void soundio_ring_buffer_advance_read_ptr(struct SoundIoRingBuffer *ring_buffer,
 int soundio_ring_buffer_fill_count(struct SoundIoRingBuffer *ring_buffer);
 int soundio_ring_buffer_free_count(struct SoundIoRingBuffer *ring_buffer);
 void soundio_ring_buffer_clear(struct SoundIoRingBuffer *ring_buffer);
+]]
+
+--[[
+static inline int soundio_get_bytes_per_frame(enum SoundIoFormat format, int channel_count) {
+    return soundio_get_bytes_per_sample(format) * channel_count;
+}
+static inline int soundio_get_bytes_per_second(enum SoundIoFormat format,
+        int channel_count, int sample_rate)
+{
+	return soundio_get_bytes_per_frame(format, channel_count) * sample_rate;
+}
 ]]
