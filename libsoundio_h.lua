@@ -201,9 +201,9 @@ struct SoundIo {
 };
 struct SoundIoDevice {
 	struct SoundIo *soundio;
-	char *id;
-	char *name;
-	enum SoundIoDeviceAim aim;
+	char *id_ptr;
+	char *name_ptr;
+	enum SoundIoDeviceAim aim_enum;
 	struct SoundIoChannelLayout *layouts;
 	int layout_count;
 	struct SoundIoChannelLayout current_layout;
@@ -259,37 +259,25 @@ struct SoundIoInStream {
 	int bytes_per_sample;
 	int layout_error;
 };
+
 struct SoundIo *soundio_create(void);
 void soundio_destroy(struct SoundIo *soundio);
+const char *soundio_strerror(int error);
+
 int soundio_connect(struct SoundIo *soundio);
 int soundio_connect_backend(struct SoundIo *soundio, enum SoundIoBackend backend);
 void soundio_disconnect(struct SoundIo *soundio);
-const char *soundio_strerror(int error);
 const char *soundio_backend_name(enum SoundIoBackend backend);
 int soundio_backend_count(struct SoundIo *soundio);
 enum SoundIoBackend soundio_get_backend(struct SoundIo *soundio, int index);
 bool soundio_have_backend(enum SoundIoBackend backend);
+
 void soundio_flush_events(struct SoundIo *soundio);
 void soundio_wait_events(struct SoundIo *soundio);
 void soundio_wakeup(struct SoundIo *soundio);
+
 void soundio_force_device_scan(struct SoundIo *soundio);
-bool soundio_channel_layout_equal(
-        const struct SoundIoChannelLayout *a,
-        const struct SoundIoChannelLayout *b);
-const char *soundio_get_channel_name(enum SoundIoChannelId id);
-enum SoundIoChannelId soundio_parse_channel_id(const char *str, int str_len);
-int soundio_channel_layout_builtin_count(void);
-const struct SoundIoChannelLayout *soundio_channel_layout_get_builtin(int index);
-const struct SoundIoChannelLayout *soundio_channel_layout_get_default(int channel_count);
-int soundio_channel_layout_find_channel(
-        const struct SoundIoChannelLayout *layout, enum SoundIoChannelId channel);
-bool soundio_channel_layout_detect_builtin(struct SoundIoChannelLayout *layout);
-const struct SoundIoChannelLayout *soundio_best_matching_channel_layout(
-        const struct SoundIoChannelLayout *preferred_layouts, int preferred_layout_count,
-        const struct SoundIoChannelLayout *available_layouts, int available_layout_count);
-void soundio_sort_channel_layouts(struct SoundIoChannelLayout *layouts, int layout_count);
-int soundio_get_bytes_per_sample(enum SoundIoFormat format);
-const char * soundio_format_string(enum SoundIoFormat format);
+
 int soundio_input_device_count(struct SoundIo *soundio);
 int soundio_output_device_count(struct SoundIo *soundio);
 struct SoundIoDevice *soundio_get_input_device(struct SoundIo *soundio, int index);
@@ -310,6 +298,26 @@ bool soundio_device_supports_sample_rate(struct SoundIoDevice *device,
         int sample_rate);
 int soundio_device_nearest_sample_rate(struct SoundIoDevice *device,
         int sample_rate);
+
+bool soundio_channel_layout_equal(
+        const struct SoundIoChannelLayout *a,
+        const struct SoundIoChannelLayout *b);
+const char *soundio_get_channel_name(enum SoundIoChannelId id);
+enum SoundIoChannelId soundio_parse_channel_id(const char *str, int str_len);
+int soundio_channel_layout_builtin_count(void);
+const struct SoundIoChannelLayout *soundio_channel_layout_get_builtin(int index);
+const struct SoundIoChannelLayout *soundio_channel_layout_get_default(int channel_count);
+int soundio_channel_layout_find_channel(
+        const struct SoundIoChannelLayout *layout, enum SoundIoChannelId channel);
+bool soundio_channel_layout_detect_builtin(struct SoundIoChannelLayout *layout);
+const struct SoundIoChannelLayout *soundio_best_matching_channel_layout(
+        const struct SoundIoChannelLayout *preferred_layouts, int preferred_layout_count,
+        const struct SoundIoChannelLayout *available_layouts, int available_layout_count);
+void soundio_sort_channel_layouts(struct SoundIoChannelLayout *layouts, int layout_count);
+
+int soundio_get_bytes_per_sample(enum SoundIoFormat format);
+const char * soundio_format_string(enum SoundIoFormat format);
+
 struct SoundIoOutStream *soundio_outstream_create(struct SoundIoDevice *device);
 void soundio_outstream_destroy(struct SoundIoOutStream *outstream);
 int soundio_outstream_open(struct SoundIoOutStream *outstream);
