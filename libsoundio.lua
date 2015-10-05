@@ -113,14 +113,17 @@ sio.wakeup = C.soundio_wakeup
 
 sio.force_device_scan = C.soundio_force_device_scan
 
-local function devices_api(get, count, getdefault)
+local function devices_api(getbyindex, count, getdefaultindex)
+	local function get(self, i)
+		return ffi.gc(checkptr(getbyindex(self, i)), C.soundio_device_unref)
+	end
 	local function api(self, which, filter)
 		if not which then --iterate filtered
 			local i = 0
 			local n = count(self)
 			return function()
 				while i < n do
-					local dev = checkptr(get(self, i))
+					local dev = get(self, i)
 					i = i + 1
 					if filter(dev) then
 						return dev
@@ -139,8 +142,8 @@ local function devices_api(get, count, getdefault)
 			return n
 		elseif which == '*' then --get default
 			if filter == nil then
-				local i = getdefault(self)
-				return i >= 0 and checkptr(get(self, i)) or nil
+				local i = getdefaultindex(self)
+				return i >= 0 and get(self, i) or nil
 			end
 			--get default filtered
 			local dev = api(self, '*')

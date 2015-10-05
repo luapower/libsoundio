@@ -12,8 +12,9 @@ audio input and output.
 ------------------------------------------- ----------------------------------------
 `soundio.new() -> sio`                      create a libsoundio state
 `sio:free()`                                free the libsoundio state
+`soundio.C -> clib`                         the C namespace
 __backends__
-`sio:connect([backend])`                    connect to a backend
+`sio:connect([backend])`                    connect to a/the default backend
 `sio:disconnect()`                          disconnect the backend
 `sio:backends() -> iter() -> name`          iterate backends
 `sio:backends'#' -> n`                      number of available backends
@@ -24,7 +25,6 @@ __devices__
 `sio:devices('*i'|'*o'[, raw]) -> dev|nil`  the default input or output device
 `dev.ref_count -> n`                        current reference count
 `dev:ref|unref() -> dev`                    increment/decrement device ref count
-`dev:sort_channel_layouts()`                TODO
 `dev.id -> s`                               device unique id
 `dev.name -> s`                             device name
 `dev.aim -> 'i'|'o'`                        whether it's for input or output
@@ -35,14 +35,14 @@ __sample rates__
 `dev.sample_rates -> sample_rate_range[]`   rample rate ranges (0-based cdata array)
 `dev.sample_rate_count -> n`                number of sample rate ranges
 `dev.sample_rate_current -> i`              index of current sample rate range
-`dev:supports_sample_rate(rate) -> t|f`     TODO
-`dev:nearest_sample_rate() -> rate`         TODO
+`dev:supports_sample_rate(rate) -> t|f`     check if a sample rate is supported
+`dev:nearest_sample_rate(rate) -> rate`     nearest supported sample rate
 __sample formats__
 `dev.formats -> format[]`                   sample formats (0-based cdata array)
 `dev.format_count -> n`                     number of formats
 `dev.current_format -> format`              current format
 `dev:supports_format(format) -> t|f`        check if device supports a format
-`soundio.format_string -> s`                string representation of a format
+`soundio.format_string(format) -> s`        string representation of a format
 `soundio.bytes_per_sample(format) -> n`     format bytes per sample
 `soundio.bytes_per_frame(format, cn) -> n`  bytes per frame for a format and channel count
 `soundio.bytes_per_second(format,cn,sr)->n` bytes per second for a format, channel count and sample rate
@@ -56,7 +56,7 @@ __channel layouts__
 `layout:find_channel(channel) -> i|nil`     index of channel in layout
 `layout:detect_builtin() -> t|f`            sets layout.name if it matches a builtin one
 `dev:sort_layouts()`                        sort layouts by channel count, descending
-`dev:supports_layout(layout) -> t|f`        TODO
+`dev:supports_layout(layout) -> t|f`        check if a channel layout is supported
 `soundio.layouts() -> iter() -> layout`     iterate built-in channel layouts
 `soundio.layouts'#' -> n`                   number of built-in channel layouts
 `soundio.layouts('*', nc) -> layout`        default layout per number of channels
@@ -67,18 +67,18 @@ __streams__
 `sin/sout:open()`                           open the stream
 __ring buffers__
 `sio:ringbuffer() -> rb`                    create a thread-safe ring buffer
-`rb:capacity() -> bytes`                    get the buffer's capacity
-`rb:write_ptr() -> ptr`                     get the write pointer
+`rb:capacity() -> bytes`                    the buffer's capacity
+`rb:write_ptr() -> ptr`                     the write pointer
 `rb:advance_write_ptr(bytes)`               advance the write pointer
-`rb:read_ptr() -> ptr`                      get the read pointer
+`rb:read_ptr() -> ptr`                      the read pointer
 `rb:advance_read_ptr(bytes)`                advance the read pointer
 `rb:fill_count() -> bytes`                  how many occupied bytes
 `rb:free_count() -> bytes`                  how many free bytes
 `rb:clear()`                                clear the buffer
 `rb:free()`                                 free the buffer
 __latencies__
-`dev.software_latency_min -> s`             min. latency
-`dev.software_latency_max -> s`             max. latency
-`dev.software_latency_current -> s`         current latency (0 if unknown)
+`dev.software_latency_min -> s`             min. software latency
+`dev.software_latency_max -> s`             max. software latency
+`dev.software_latency_current -> s`         current software latency (0 if unknown)
 __events__
 ------------------------------------------- ----------------------------------------
