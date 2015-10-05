@@ -11,7 +11,6 @@ audio input and output.
 
 ------------------------------------------- ----------------------------------------
 `soundio.new() -> sio`                      create a libsoundio state
-`soundio.C -> clib`                         the C namespace
 __backends__
 `sio:connect([backend])`                    connect to a/the default backend
 `sio:disconnect()`                          disconnect the backend
@@ -107,6 +106,8 @@ __memory management__
 `sio|sin|sout|rb:free()`                    free the object and detach it from gc
 `dev.ref_count -> n`                        current reference count
 `dev:ref|unref() -> dev`                    increment/decrement device ref count
+__C__
+`soundio.C -> clib`                         the C namespace
 ------------------------------------------- ----------------------------------------
 
 __(1)__ Stream callbacks are called from other threads, thus cannot be
