@@ -60,25 +60,25 @@ __channel layouts__
 __streams__
 `dev:stream'o' -> sout`                     create an output stream
 `dev:stream'i' -> sin`                      create an input stream
-`sin/sout:open()`                           open the stream
-`sin/sout:start()`                          start the stream
-`sin/sout:pause(t|f|)`                      pause/unpause the stream
-`sin/sout.device -> dev`                    weak back-reference to the device
-`sin/sout.format -> format`                 sample format
-`sin/sout.sample_rate -> rate`              sample rate
-`sin/sout.layout -> layout`                 channel layout
-`sin/sout.software_latency -> seconds`      software latency
-`sin/sout.name`                             stream/client/session name
-`sin/sout.non_terminal_hint -> t|f`         JACK hint for nonterminal output streams
-`sin/sout.bytes_per_frame -> n`             bytes per frame
-`sin/sout.bytes_per_sample -> n`            bytes per sample
-`sin/sout.layout_error -> errcode|nil`      error setting the channel layout
+`sin|sout:open()`                           open the stream
+`sin|sout:start()`                          start the stream
+`sin|sout:pause(t|f|)`                      pause/unpause the stream
+`sin|sout.device -> dev`                    weak back-reference to the device
+`sin|sout.format -> format`                 sample format
+`sin|sout.sample_rate -> rate`              sample rate
+`sin|sout.layout -> layout`                 channel layout
+`sin|sout.software_latency -> seconds`      software latency
+`sin|sout.name`                             stream/client/session name
+`sin|sout.non_terminal_hint -> t|f`         JACK hint for nonterminal output streams
+`sin|sout.bytes_per_frame -> n`             bytes per frame
+`sin|sout.bytes_per_sample -> n`            bytes per sample
+`sin|sout.layout_error -> errcode|nil`      error setting the channel layout
 `sin.read_callback <-f(sin,minfc,maxfc)`    read callback (1)
 `sin.overflow_callback <- f(sin)`           buffer full callback (1)
 `sout.write_callback <-f(sout,minfc,maxfc)` write callback(1)
 `sout.underflow_callback <- f(sout)`        buffer empty callback(1)
-`sin/sout.error_callback <- f(sin, err)`    error callback (1)
-`sin/sout:latency() -> seconds`             get the actual latency
+`sin|sout.error_callback <- f(sin, err)`    error callback (1)
+`sin|sout:latency() -> seconds`             get the actual latency
 `sout:begin_write(n) -> areas, n`           start writing `n` frames to the stream
 `sout:end_write() -> true|nil`              say that frames were written (returns true for underflow)
 `sout:clear_buffer()`                       clear the buffer
@@ -94,7 +94,7 @@ __ring buffers__
 `rb:fill_count() -> bytes`                  how many occupied bytes
 `rb:free_count() -> bytes`                  how many free bytes
 `rb:clear()`                                clear the buffer
-`sin/sio:ringbuffer() -> rb`                set up a ring buffer for async streaming
+`sin|sio:ringbuffer() -> rb`                set up a ring buffer for async streaming
 __latencies__
 `dev.software_latency_min -> s`             min. software latency
 `dev.software_latency_max -> s`             max. software latency
@@ -104,7 +104,7 @@ __events__
 `sio:wait_events()`                         flush events and wait for more events
 `sio:wakeup()`                              stop waiting for events
 __memory management__
-`sio/sin/sout/rb:free()`                    free the object and detach it from gc
+`sio|sin|sout|rb:free()`                    free the object and detach it from gc
 `dev.ref_count -> n`                        current reference count
 `dev:ref|unref() -> dev`                    increment/decrement device ref count
 ------------------------------------------- ----------------------------------------
