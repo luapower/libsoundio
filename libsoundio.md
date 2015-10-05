@@ -11,7 +11,6 @@ audio input and output.
 
 ------------------------------------------- ----------------------------------------
 `soundio.new() -> sio`                      create a libsoundio state
-`sio:free()`                                free the libsoundio state
 `soundio.C -> clib`                         the C namespace
 __backends__
 `sio:connect([backend])`                    connect to a/the default backend
@@ -23,13 +22,11 @@ __devices__
 `sio:devices([nil,raw])->iter()->dev`       iterate devices
 `sio:devices('#'|'#i'|'#o'[, raw])->n`      number of all|input|output devices
 `sio:devices('*i'|'*o'[,raw])->dev|nil`     the default input or output device
-`dev.ref_count -> n`                        current reference count
-`dev:ref|unref() -> dev`                    increment/decrement device ref count
 `dev.id -> s`                               device unique id
 `dev.name -> s`                             device name
-`dev.aim -> 'i'|'o'`                        whether it's for input or output
+`dev.aim -> 'i'|'o'`                        device aim: input or output
 `dev.soundio -> sio`                        weak back-reference to the libsoundio state
-`dev.is_raw -> t|f`                         check if it's a raw device
+`dev.is_raw -> t|f`                         raw device
 `dev.probe_error -> error_code|nil`         device probe error code (C.SoundError enum)
 __sample rates__
 `dev.sample_rates -> sample_rate_range[]`   rample rate ranges (0-based cdata array)
@@ -63,12 +60,25 @@ __channel layouts__
 __streams__
 `dev:stream'o' -> sout`                     create an output stream
 `dev:stream'i' -> sin`                      create an input stream
-`sin/sout:free()`                           destroy the stream
 `sin/sout:open()`                           open the stream
 `sin/sout:start()`                          start the stream
 `sin/sout:pause(t|f|)`                      pause/unpause the stream
-`sin/sout:latency() -> s`                   get the current latency
-`sin/sout:async() -> async`                 get an async API for the buffer
+`sin/sout.device -> dev`                    weak back-reference to the device
+`sin/sout.format -> format`
+`sin/sout.sample_rate -> rate`
+`sin/sout.layout -> layout`
+`sin/sout.software_latency -> seconds`
+`sin/sout.name`
+`sin/sout.non_terminal_hint -> t|f`
+`sin/sout.bytes_per_frame -> n`
+`sin/sout.bytes_per_sample -> n`
+`sin/sout.layout_error -> errcode|nil`
+`sin.read_callback`
+`sin.overflow_callback`
+`sout.write_callback`
+`sout.underflow_callback`
+`sin/sout.error_callback`
+`sin/sout:latency() -> seconds`             get the actual latency
 `sout:begin_write(n) -> areas, n`           start writing `n` frames to the stream
 `sout:end_write() -> true|nil`              say that frames were written (returns true for underflow)
 `sout:clear_buffer()`                       clear the buffer
@@ -84,7 +94,7 @@ __ring buffers__
 `rb:fill_count() -> bytes`                  how many occupied bytes
 `rb:free_count() -> bytes`                  how many free bytes
 `rb:clear()`                                clear the buffer
-`rb:free()`                                 free the buffer
+__
 __latencies__
 `dev.software_latency_min -> s`             min. software latency
 `dev.software_latency_max -> s`             max. software latency
@@ -93,6 +103,10 @@ __events__
 `sio:flush_events()`                        update info on all devices
 `sio:wait_events()`                         flush events and wait for more events
 `sio:wakeup()`                              stop waiting for events
+__memory management__
+`sio/sin/sout/rb:free()`                    free the object and detach it from gc
+`dev.ref_count -> n`                        current reference count
+`dev:ref|unref() -> dev`                    increment/decrement device ref count
 ------------------------------------------- ----------------------------------------
 
 ## Streams
