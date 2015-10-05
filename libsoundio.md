@@ -20,7 +20,7 @@ __backends__
 `sio:backends'#' -> n`                      number of available backends
 `sio:backends(name) -> t|f`                 check if a backend is available
 __devices__
-`sio:devices([nil, raw]) -> iter() -> dev`  iterate devices
+`sio:devices([nil,raw])->iter()->dev`       iterate devices
 `sio:devices('#'|'#i'|'#o'[, raw]) -> n`    number of all|input|output devices
 `sio:devices('*i'|'*o'[, raw]) -> dev|nil`  the default input or output device
 `dev.ref_count -> n`                        current reference count
