@@ -68,6 +68,7 @@ __streams__
 `sin/sout:start()`                          start the stream
 `sin/sout:pause(t|f|)`                      pause/unpause the stream
 `sin/sout:latency() -> s`                   get the current latency
+`sin/sout:async() -> async`                 get an async API for the buffer
 `sout:begin_write(n) -> areas, n`           start writing `n` frames to the stream
 `sout:end_write() -> true|nil`              say that frames were written (returns true for underflow)
 `sout:clear_buffer()`                       clear the buffer
@@ -89,4 +90,11 @@ __latencies__
 `dev.software_latency_max -> s`             max. software latency
 `dev.software_latency_current -> s`         current software latency (0 if unknown)
 __events__
+`sio:flush_events()`                        update info on all devices
+`sio:wait_events()`                         flush events and wait for more events
+`sio:wakeup()`                              stop waiting for events
 ------------------------------------------- ----------------------------------------
+
+## Streams
+
+The
