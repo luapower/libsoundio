@@ -72,10 +72,10 @@ __streams__
 `sin|sout.bytes_per_frame -> n`                   bytes per frame
 `sin|sout.bytes_per_sample -> n`                  bytes per sample
 `sin|sout.layout_error -> errcode|nil`            error setting the channel layout
-`sin.read_callback <-f(sin,minfc,maxfc)`          read callback (1)
+`sin.read_callback <- f(sin, minfc, maxfc)`       read callback (1)
 `sin.overflow_callback <- f(sin)`                 buffer full callback (1)
-`sout.write_callback <-f(sout,minfc,maxfc)`       write callback(1)
-`sout.underflow_callback <- f(sout)`              buffer empty callback(1)
+`sout.write_callback <- f(sout, minfc, maxfc)`    write callback (1)
+`sout.underflow_callback <- f(sout)`              buffer empty callback (1)
 `sin|sout.error_callback <- f(sin, err)`          error callback (1)
 `sin|sout:latency() -> seconds`                   get the actual latency
 `sout:begin_write(n) -> areas, n`                 start writing `n` frames to the stream
@@ -114,4 +114,23 @@ __(1)__ Stream callbacks are called from other threads, thus cannot be
 assigned to functions from the caller interpreter state. Instead, separate
 [luastate]s must be created for each thread and the callbacks must be
 assigned to functions from those states.
+
+## Example
+
+~~~{.lua}
+
+
+~~~
+
+## Backends
+
+------------ ----------------------- ---------------
+__name__     __platforms__           __default on__
+jack         Linux, OSX, Windows
+pulseaudio   Linux, OSX, Windows
+alsa         Linux                   Linux
+coreaudio    OSX                     OSX
+wasapi       Windows                 Windows
+dummy        Linux, OSX, Windows
+------------ ----------------------- ---------------
 
