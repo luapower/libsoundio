@@ -64,20 +64,20 @@ __streams__
 `sin/sout:start()`                          start the stream
 `sin/sout:pause(t|f|)`                      pause/unpause the stream
 `sin/sout.device -> dev`                    weak back-reference to the device
-`sin/sout.format -> format`
-`sin/sout.sample_rate -> rate`
-`sin/sout.layout -> layout`
-`sin/sout.software_latency -> seconds`
-`sin/sout.name`
-`sin/sout.non_terminal_hint -> t|f`
-`sin/sout.bytes_per_frame -> n`
-`sin/sout.bytes_per_sample -> n`
-`sin/sout.layout_error -> errcode|nil`
-`sin.read_callback`
-`sin.overflow_callback`
-`sout.write_callback`
-`sout.underflow_callback`
-`sin/sout.error_callback`
+`sin/sout.format -> format`                 sample format
+`sin/sout.sample_rate -> rate`              sample rate
+`sin/sout.layout -> layout`                 channel layout
+`sin/sout.software_latency -> seconds`      software latency
+`sin/sout.name`                             stream/client/session name
+`sin/sout.non_terminal_hint -> t|f`         JACK hint for nonterminal output streams
+`sin/sout.bytes_per_frame -> n`             bytes per frame
+`sin/sout.bytes_per_sample -> n`            bytes per sample
+`sin/sout.layout_error -> errcode|nil`      error setting the channel layout
+`sin.read_callback <-f(sin,minfc,maxfc)`    read callback (1)
+`sin.overflow_callback <- f(sin)`           buffer full callback (1)
+`sout.write_callback <-f(sout,minfc,maxfc)` write callback(1)
+`sout.underflow_callback <- f(sout)`        buffer empty callback(1)
+`sin/sout.error_callback <- f(sin, err)`    error callback (1)
 `sin/sout:latency() -> seconds`             get the actual latency
 `sout:begin_write(n) -> areas, n`           start writing `n` frames to the stream
 `sout:end_write() -> true|nil`              say that frames were written (returns true for underflow)
@@ -94,7 +94,7 @@ __ring buffers__
 `rb:fill_count() -> bytes`                  how many occupied bytes
 `rb:free_count() -> bytes`                  how many free bytes
 `rb:clear()`                                clear the buffer
-__
+`sin/sio:ringbuffer() -> rb`                set up a ring buffer for async streaming
 __latencies__
 `dev.software_latency_min -> s`             min. software latency
 `dev.software_latency_max -> s`             max. software latency
@@ -109,6 +109,8 @@ __memory management__
 `dev:ref|unref() -> dev`                    increment/decrement device ref count
 ------------------------------------------- ----------------------------------------
 
-## Streams
+__(1)__ Stream callbacks are called from other threads, thus cannot be
+assigned to functions from the caller interpreter state. Instead, separate
+[luastate]s must be created for each thread and the callbacks must be
+assigned to functions from those states.
 
-The
