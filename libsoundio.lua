@@ -270,7 +270,7 @@ local layoutprop = {}
 layout.__eq = C.soundio_channel_layout_equal
 layout.__index = vprops(layout, layoutprop)
 
-function M.layouts(which, channel_count)
+function M.builtin_layouts(which, channel_count)
 	if not which then --iterate
 		local i = -1
 		local n = C.soundio_channel_layout_builtin_count()
@@ -286,8 +286,11 @@ function M.layouts(which, channel_count)
 	end
 end
 
-function layout:find_channel(channel_id)
-	local i = C.soundio_channel_layout_find_channel(self, channel_id)
+function layout:find_channel(channel)
+	if type(channel) == 'string' then
+		channel = assert(M.channel_id(channel), 'invalid channel name')
+	end
+	local i = C.soundio_channel_layout_find_channel(self, channel)
 	return i ~= -1 and i or nil
 end
 
@@ -301,10 +304,6 @@ end
 
 function dev:sort_layouts()
 	C.soundio_sort_channel_layouts(self.layouts, self.layout_count)
-end
-
-function M.best_matching_channel_layout(preferred, available)
-	return C.soundio_best_matching_channel_layout(preferred, #preferred, available, #available)
 end
 
 --streams --------------------------------------------------------------------
