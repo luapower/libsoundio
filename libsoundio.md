@@ -40,8 +40,8 @@ __sample formats__
 `dev:supports_format(format) -> t|f`              check if device supports a format
 `soundio.format_string(format) -> s`              string representation of a format
 `soundio.bytes_per_sample(format) -> n`           format bytes per sample
-`soundio.bytes_per_frame(format, cn) -> n`        bytes per frame for a format and channel count
-`soundio.bytes_per_second(format, cn, sr) -> n`   bytes per second for a format, channel count and sample rate
+`soundio.bytes_per_frame(format, cc) -> n`        bytes per frame for a format and channel count
+`soundio.bytes_per_second(format, cc, sr) -> n`   bytes per second for a format, channel count and sample rate
 __channels__
 `soundio.channel_id(name) -> channel`             "front-left" -> C.SoundIoChannelIdFrontLeft
 `soundio.channel_name(channel) -> name`           C.SoundIoChannelIdFrontLeft -> "Front Left"
@@ -53,9 +53,9 @@ __channel layouts__
 `layout:detect_builtin() -> t|f`                  set layout.name if it matches a builtin one
 `dev:sort_layouts()`                              sort layouts by channel count, descending
 `dev:supports_layout(layout) -> t|f`              check if a channel layout is supported
-`soundio.builtin_layouts()->iter()->layout`       iterate built-in channel layouts
+`soundio.builtin_layouts() -> iter() -> layout`   iterate built-in channel layouts
 `soundio.builtin_layouts'#' -> n`                 number of built-in channel layouts
-`soundio.builtin_layouts('*',cc) -> layout`       default layout for a certain channel count
+`soundio.builtin_layouts('*', cc) -> layout`      default layout for a certain channel count
 __streams__
 `dev:stream'o' -> sout`                           create an output stream
 `dev:stream'i' -> sin`                            create an input stream
