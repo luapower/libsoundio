@@ -117,7 +117,7 @@ assigned to functions from those states.
 ## Example
 
 ~~~{.lua}
-local soundio = require'soundio'
+local soundio = require'libsoundio'
 local time = require'time'
 
 local sio = soundio.new()
