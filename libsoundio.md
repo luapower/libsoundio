@@ -28,7 +28,7 @@ __devices__
 `dev.is_raw -> t|f`                         raw device
 `dev.probe_error -> error_code|nil`         device probe error code (C.SoundError enum)
 __sample rates__
-`dev.sample_rates -> sample_rate_range[]`   rample rate ranges (0-based cdata array)
+`dev.sample_rates -> ranges[]`              0-based array of C.SoundIoSampleRateRange
 `dev.sample_rate_count -> n`                number of sample rate ranges
 `dev.sample_rate_current -> i`              index of current sample rate range
 `dev:supports_sample_rate(rate) -> t|f`     check if a sample rate is supported
