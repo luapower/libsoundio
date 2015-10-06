@@ -189,8 +189,3 @@ wasapi       Windows                 Windows
 dummy        Linux, OSX, Windows
 ------------ ----------------------- ---------------
 
-## Stream buffers
-
-Stream buffers use libsoundio's thread-safe ring buffers with Lua states
-
-
