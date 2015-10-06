@@ -27,6 +27,7 @@ __devices__
 `dev.soundio -> sio`                              weak back-reference to the libsoundio state
 `dev.is_raw -> t|f`                               raw device
 `dev.probe_error -> error_code|nil`               device probe error code (C.SoundError enum)
+`dev:print([print])`                              print device info
 __sample rates__
 `dev.sample_rates -> ranges[]`                    0-based array of C.SoundIoSampleRateRange
 `dev.sample_rate_count -> n`                      number of sample rate ranges
@@ -42,6 +43,7 @@ __sample formats__
 `soundio.bytes_per_sample(format) -> n`           format bytes per sample
 `soundio.bytes_per_frame(format, cc) -> n`        bytes per frame for a format and channel count
 `soundio.bytes_per_second(format, cc, sr) -> n`   bytes per second for a format, channel count and sample rate
+`soundio.sample_range(format) -> min, max`        min and max sample values
 __channels__
 `soundio.channel_id(name) -> channel`             "front-left" -> C.SoundIoChannelIdFrontLeft
 `soundio.channel_name(channel) -> name`           C.SoundIoChannelIdFrontLeft -> "Front Left"
@@ -70,6 +72,7 @@ __streams__
 `sin|sout.non_terminal_hint -> t|f`               JACK hint for nonterminal output streams
 `sin|sout.bytes_per_frame -> n`                   bytes per frame
 `sin|sout.bytes_per_sample -> n`                  bytes per sample
+`sio|sout.bytes_per_second -> n`                  bytes per second
 `sin|sout.layout_error -> errcode|nil`            error setting the channel layout
 `sin.read_callback <- f(sin, minfc, maxfc)`       read callback (1)
 `sin.overflow_callback <- f(sin)`                 buffer full callback (1)
@@ -82,8 +85,14 @@ __streams__
 `sout:clear_buffer()`                             clear the buffer
 `sin:begin_read(n) -> areas, n`                   start reading `n` frames from the stream
 `sin:end_read()`                                  say that the frames were read
+__stream buffers__
+`sin|sout:buffer() -> buf`                        create & setup a stream buffer
+`buf:free_count() -> n`                           number of free frames
+`buf:capacity() -> n`                             capacity in frames
+`buf:write_ptr() -> write_ptr`                    the buffer's write pointer
+`write_ptr[frame_index][chan_index] <- sample`    write samples into the buffer
+`buf:advance_write_ptr(frame_count)`              advance the write pointer
 __ring buffers__
-`sio:ringbuffer() -> rb`                          create a thread-safe ring buffer
 `rb:capacity() -> bytes`                          the buffer's capacity
 `rb:write_ptr() -> ptr`                           the write pointer
 `rb:advance_write_ptr(bytes)`                     advance the write pointer
@@ -92,7 +101,6 @@ __ring buffers__
 `rb:fill_count() -> bytes`                        how many occupied bytes
 `rb:free_count() -> bytes`                        how many free bytes
 `rb:clear()`                                      clear the buffer
-`sin|sio:ringbuffer() -> rb`                      set up a ring buffer for async streaming
 __latencies__
 `dev.software_latency_min -> s`                   min. software latency
 `dev.software_latency_max -> s`                   max. software latency
@@ -125,18 +133,39 @@ assert(sio:backends'#' > 0, 'no backends')
 sio:connect()
 
 local dev = assert(sio:devices'*o', 'no output devices')
+dev:print()
 
 local str = dev:stream()
+str.format = soundio.C.SoundIoFormatS16NE --signed 16bit native endian
+str.sample_rate = 44100
 str:open()
-local rb = str:ringbuffer()
+
+local buf = str:buffer(0.1) --make a 0.1 seconds buffer
+
 str:start()
 
+local seconds_offset = 0
+local function sample(i)
+	local seconds_per_frame = 1 / str.sample_rate
+	local pitch = 440
+	local radians_per_second = pitch * 2 * math.pi
+	local n = 0
+	write_ptr[frame][channel] = 2000 *
+	math.sin((seconds_offset + frame * seconds_per_frame) *
+		(radians_per_second * (channel + 1)))
+	seconds_offset = seconds_offset + seconds_per_frame * frame_count
+end
+
 while true do
-	local areas, n = rb:begin_write(44100)
-	for i = 0, n-1 do
-		--TODO
+	local p = buf:write_ptr()
+	local n = buf:free_count()
+	for channel = 0, str.layout.channel_count-1 do
+		for i = 0, n-1 do
+			p[i][channel] = sample(i)
+		end
 	end
-	rb:end_write()
+	buf:advance_write_ptr()
+	time.sleep(0.1)
 end
 
 ~~~
@@ -152,4 +181,9 @@ coreaudio    OSX                     OSX
 wasapi       Windows                 Windows
 dummy        Linux, OSX, Windows
 ------------ ----------------------- ---------------
+
+## Stream buffers
+
+Stream buffers use libsoundio's thread-safe ring buffers with Lua states
+
 
