@@ -3,26 +3,7 @@ local ffi = require'ffi'
 local lua = require'luastate'
 local time = require'time'
 
-local exit = os.exit
-local stderr = io.stderr
-local stdin = io.stdin
-
-local function soundio_strerror(err)
-	return ffi.string(soundio.C.soundio_strerror(err))
-end
-
-local function fprintf(f, ...)
-	f:write(string.format(...))
-end
-
-local function getc(f)
-	return f:read(1)
-end
-
-local PI = math.pi
-
 local sio = soundio.new()
-sio:connect()
 
 --reflection -----------------------------------------------------------------
 
