@@ -27,16 +27,9 @@ odev:print()
 --buffered streaming ---------------------------------------------------------
 
 local dev = odev
-local sample_rate = 44100
-local format = soundio.C.SoundIoFormatFloat32NE
-
 assert(not dev.probe_error)
-assert(dev:supports_format(format))
-assert(dev:supports_sample_rate(sample_rate))
 
 local str = dev:stream()
-str.format = format
-str.sample_rate = sample_rate
 str:open()
 assert(not str.layout_error)
 local buf = str:buffer(0.1)
