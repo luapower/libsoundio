@@ -37,7 +37,7 @@ __sample rates__
 __sample formats__
 `dev.formats -> format[]`                         0-based array of C.SoundIoFormat
 `dev.format_count -> n`                           number of formats
-`dev.current_format -> format`                    current format (as C.SoundIoFormat)
+`dev.current_format -> format`                    current format as C.SoundIoFormat
 `dev:supports_format(format) -> t|f`              check if device supports a format
 `soundio.format_string(format) -> s`              string representation of a format
 `soundio.bytes_per_sample(format) -> n`           format bytes per sample
@@ -50,7 +50,7 @@ __channels__
 __channel layouts__
 `dev.layouts -> layout[]`                         0-based array of C.SoundIoChannelLayout
 `dev.layout_count -> n`                           number of channel layouts
-`dev.current_layout -> layout`                    current layout (as C.SoundIoChannelLayout)
+`dev.current_layout -> layout`                    current layout as C.SoundIoChannelLayout
 `layout:find_channel(channel) -> i|nil`           index of channel (by name or id) in layout
 `layout:detect_builtin() -> t|f`                  set layout.name if it matches a builtin one
 `dev:sort_layouts()`                              sort layouts by channel count, descending
@@ -64,10 +64,10 @@ __streams__
 `sin|sout:start()`                                start the stream
 `sin|sout:pause(t|f|)`                            pause/unpause the stream
 `sin|sout.device -> dev`                          weak back-reference to the device
-`sin|sout.format -> format`                       sample format
-`sin|sout.sample_rate -> rate`                    sample rate
-`sin|sout.layout -> layout`                       channel layout
-`sin|sout.software_latency -> seconds`            software latency
+`sin|sout.format -> format`                       sample format as C.SoundIoFormatS16NE
+`sin|sout.sample_rate -> n`                       sample rate in frames per second
+`sin|sout.layout -> layout`                       channel layout as C.SoundIoChannelLayout
+`sin|sout.software_latency -> seconds`            software latency in seconds
 `sin|sout.name`                                   stream/client/session name
 `sin|sout.non_terminal_hint -> t|f`               JACK hint for nonterminal output streams
 `sin|sout.bytes_per_frame -> n`                   bytes per frame
