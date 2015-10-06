@@ -87,19 +87,26 @@ __streams__
 `sin:end_read()`                                  say that the frames were read
 __stream buffers__
 `sin|sout:buffer() -> buf`                        create & setup a stream buffer
-`buf:free_count() -> n`                           number of free frames
-`buf:capacity() -> n`                             capacity in frames
-`buf:write_ptr() -> write_ptr`                    the buffer's write pointer
-`write_ptr[frame_index][chan_index] <- sample`    write samples into the buffer
-`buf:advance_write_ptr(frame_count)`              advance the write pointer
+`buf:capacity() -> frames`                        buffer's capacity
+`buf:fill_count() -> frames`                      how many occupied frames
+`buf:free_count() -> frames`                      how many free frames
+`buf:write_ptr() -> fptr`                         the write pointer
+`buf:write_buf() -> fptr, frames`                 the write pointer and free frame count
+`buf:advance_write_ptr(frames)`                   advance the write pointer
+`buf:read_ptr() -> fptr`                          the read pointer
+`buf:read_buf() -> fptr, frames`                  the read pointer and filled frame count
+`buf:advance_read_ptr(frames)`                    advance the read pointer
+`fptr[frame_index][channel_index] <-> sample`     read/write samples from/into the buffer
 __ring buffers__
-`rb:capacity() -> bytes`                          the buffer's capacity
-`rb:write_ptr() -> ptr`                           the write pointer
-`rb:advance_write_ptr(bytes)`                     advance the write pointer
-`rb:read_ptr() -> ptr`                            the read pointer
-`rb:advance_read_ptr(bytes)`                      advance the read pointer
+`rb:capacity() -> bytes`                          buffer's capacity
 `rb:fill_count() -> bytes`                        how many occupied bytes
 `rb:free_count() -> bytes`                        how many free bytes
+`rb:write_ptr() -> ptr`                           the write pointer as `char*`
+`rb:write_buf() -> ptr, bytes`                    the write pointer and free bytes count
+`rb:advance_write_ptr(bytes)`                     advance the write pointer
+`rb:read_ptr() -> ptr`                            the read pointer as `char*`
+`rb:read_buf() -> ptr, bytes`                     the read pointer and filled bytes count
+`rb:advance_read_ptr(bytes)`                      advance the read pointer
 `rb:clear()`                                      clear the buffer
 __latencies__
 `dev.software_latency_min -> s`                   min. software latency

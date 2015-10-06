@@ -477,6 +477,8 @@ rb.advance_read_ptr = C.soundio_ring_buffer_advance_read_ptr
 rb.fill_count = C.soundio_ring_buffer_fill_count
 rb.free_count = C.soundio_ring_buffer_free_count
 rb.clear = C.soundio_ring_buffer_clear
+function rb:write_buf() return self:write_ptr(), self:free_count() end
+function rb:read_buf() return self:read_ptr(), self:fill_count() end
 
 --buffered streaming API -----------------------------------------------------
 
@@ -564,6 +566,18 @@ function buf:advance_write_ptr(n)
 	self.ringbuffer:advance_write_ptr(n * self.stream.bytes_per_frame)
 end
 
+function buf:read_ptr()
+	return ffi.cast(self.ptr_type, self.ringbuffer:read_ptr())
+end
+
+function buf:advance_read_ptr(n)
+	self.ringbuffer:advance_read_ptr(n * self.stream.bytes_per_frame)
+end
+
+function buf:fill_count()
+	return math.floor(self.ringbuffer:fill_count() / self.stream.bytes_per_frame)
+end
+
 function buf:free_count()
 	return math.floor(self.ringbuffer:free_count() / self.stream.bytes_per_frame)
 end
@@ -571,6 +585,9 @@ end
 function buf:capacity()
 	return math.floor(self.ringbuffer:capacity() / self.stream.bytes_per_frame)
 end
+
+buf.write_buf = rb.write_buf
+buf.read_buf = rb.read_buf
 
 --metatype assignments -------------------------------------------------------
 
