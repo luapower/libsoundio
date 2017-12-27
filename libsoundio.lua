@@ -348,7 +348,9 @@ function dev:print(print_)
 	print('  current_latency     : '..self.software_latency_current)
 	print('  is_raw              : '..tostring(self.is_raw))
 	print('  ref_count           : '..self.ref_count)
+	if self.probe_error then
 	print('  probe_error         : '..tostring(self.probe_error))
+	end
 end
 
 --streams --------------------------------------------------------------------
@@ -411,6 +413,10 @@ end
 
 function strout:pause(pause)
 	check(C.soundio_outstream_pause(self, pause))
+end
+
+function strout:set_volume(volume)
+	check(C.soundio_outstream_set_volume(self, volume))
 end
 
 local dbuf = ffi.new'double[1]'

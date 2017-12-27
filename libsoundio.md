@@ -12,7 +12,7 @@ audio input and output.
 ------------ -----------------------------------------------------------------
 __name__     __platforms__
 alsa         Linux/ALSA 1.0.27+ (Ubuntu 14, Debian 8)
-coreaudio    OSX 10.9+
+coreaudio    OSX 10.10+
 wasapi       Windows 7+
 dummy        all
 ------------ -----------------------------------------------------------------
@@ -93,6 +93,7 @@ __streams__
 `sout:begin_write(n) -> areas, n`                 start writing `n` frames to the stream
 `sout:end_write() -> true|nil`                    say that frames were written (returns true for underflow)
 `sout:clear_buffer()`                             clear the buffer
+`sout:set_volume(volume)`                         set output volume
 `sin:begin_read(n) -> areas, n`                   start reading `n` frames from the stream
 `sin:end_read()`                                  say that the frames were read
 __stream buffers__

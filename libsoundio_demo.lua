@@ -12,7 +12,8 @@ local idev = sio:devices'*i'
 local odev = sio:devices'*o'
 local idev_raw = sio:devices('*i', true)
 local odev_raw = sio:devices('*o', true)
-print(idev.id == (idev_raw and idev_raw.id), idev == idev_raw)
+print('in  is raw?', idev.id == (idev_raw and idev_raw.id), idev == idev_raw)
+print('out is raw?', odev.id == (odev_raw and odev_raw.id), odev == odev_raw)
 
 print'Devices'
 for dev in sio:devices() do
@@ -36,7 +37,9 @@ str:open()
 assert(not str.layout_error, 'unable to set channel layout')
 
 local buf = str:buffer() --make a 1s buffer
-str:clear_buffer()
+if ffi.abi'win' then
+	str:clear_buffer()
+end
 
 local function play_vorbis_file()
 

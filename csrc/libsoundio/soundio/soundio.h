@@ -8,7 +8,6 @@
 #ifndef SOUNDIO_SOUNDIO_H
 #define SOUNDIO_SOUNDIO_H
 
-#include "config.h"
 #include "endian.h"
 #include <stdbool.h>
 
@@ -19,14 +18,18 @@
 #define SOUNDIO_EXTERN_C
 #endif
 
-#if defined(_WIN32)
-#if defined(SOUNDIO_BUILDING_LIBRARY)
-#define SOUNDIO_EXPORT SOUNDIO_EXTERN_C __declspec(dllexport)
+#if defined(SOUNDIO_STATIC_LIBRARY)
+# define SOUNDIO_EXPORT SOUNDIO_EXTERN_C
 #else
-#define SOUNDIO_EXPORT SOUNDIO_EXTERN_C __declspec(dllimport)
-#endif
-#else
-#define SOUNDIO_EXPORT SOUNDIO_EXTERN_C __attribute__((visibility ("default")))
+# if defined(_WIN32)
+#  if defined(SOUNDIO_BUILDING_LIBRARY)
+#   define SOUNDIO_EXPORT SOUNDIO_EXTERN_C __declspec(dllexport)
+#  else
+#   define SOUNDIO_EXPORT SOUNDIO_EXTERN_C __declspec(dllimport)
+#  endif
+# else
+#  define SOUNDIO_EXPORT SOUNDIO_EXTERN_C __attribute__((visibility ("default")))
+# endif
 #endif
 /// \endcond
 
@@ -272,6 +275,10 @@ enum SoundIoFormat {
 
 #elif defined(SOUNDIO_OS_LITTLE_ENDIAN)
 
+/// Note that we build the documentation in Little Endian mode,
+/// so all the "NE" macros in the docs point to "LE" and
+/// "FE" macros point to "BE". On a Big Endian system it is the
+/// other way around.
 #define SoundIoFormatS16NE SoundIoFormatS16LE
 #define SoundIoFormatU16NE SoundIoFormatU16LE
 #define SoundIoFormatS24NE SoundIoFormatS24LE
@@ -529,7 +536,8 @@ struct SoundIoOutStream {
     /// For JACK, this value is always equal to
     /// SoundIoDevice::software_latency_current of the device.
     double software_latency;
-
+    /// Core Audio and WASAPI only: current output Audio Unit volume. Float, 0.0-1.0.
+    float volume;
     /// Defaults to NULL. Put whatever you want here.
     void *userdata;
     /// In this callback, you call ::soundio_outstream_begin_write and
@@ -670,7 +678,14 @@ struct SoundIoInStream {
     int layout_error;
 };
 
-// Main Context
+/// See also ::soundio_version_major, ::soundio_version_minor, ::soundio_version_patch
+SOUNDIO_EXPORT const char *soundio_version_string(void);
+/// See also ::soundio_version_string, ::soundio_version_minor, ::soundio_version_patch
+SOUNDIO_EXPORT int soundio_version_major(void);
+/// See also ::soundio_version_major, ::soundio_version_string, ::soundio_version_patch
+SOUNDIO_EXPORT int soundio_version_minor(void);
+/// See also ::soundio_version_major, ::soundio_version_minor, ::soundio_version_string
+SOUNDIO_EXPORT int soundio_version_patch(void);
 
 /// Create a SoundIo context. You may create multiple instances of this to
 /// connect to multiple backends. Sets all fields to defaults.
@@ -915,9 +930,10 @@ SOUNDIO_EXPORT struct SoundIoOutStream *soundio_outstream_create(struct SoundIoD
 /// You may not call this function from the SoundIoOutStream::write_callback thread context.
 SOUNDIO_EXPORT void soundio_outstream_destroy(struct SoundIoOutStream *outstream);
 
-/// After you call this function, SoundIoOutStream:software_latency is set to the correct
-/// value.
-/// The next thing to do is call ::soundio_instream_start.
+/// After you call this function, SoundIoOutStream::software_latency is set to
+/// the correct value.
+///
+/// The next thing to do is call ::soundio_outstream_start.
 /// If this function returns an error, the outstream is in an invalid state and
 /// you must call ::soundio_outstream_destroy on it.
 ///
@@ -931,7 +947,6 @@ SOUNDIO_EXPORT void soundio_outstream_destroy(struct SoundIoOutStream *outstream
 /// * #SoundIoErrorBackendDisconnected
 /// * #SoundIoErrorSystemResources
 /// * #SoundIoErrorNoSuchClient - when JACK returns `JackNoSuchClient`
-/// * #SoundIoErrorOpeningDevice
 /// * #SoundIoErrorIncompatibleBackend - SoundIoOutStream::channel_count is
 ///   greater than the number of channels the backend can handle.
 /// * #SoundIoErrorIncompatibleDevice - stream parameters requested are not
@@ -939,6 +954,8 @@ SOUNDIO_EXPORT void soundio_outstream_destroy(struct SoundIoOutStream *outstream
 SOUNDIO_EXPORT int soundio_outstream_open(struct SoundIoOutStream *outstream);
 
 /// After you call this function, SoundIoOutStream::write_callback will be called.
+///
+/// This function might directly call SoundIoOutStream::write_callback.
 ///
 /// Possible errors:
 /// * #SoundIoErrorStreaming
@@ -1006,14 +1023,15 @@ SOUNDIO_EXPORT int soundio_outstream_end_write(struct SoundIoOutStream *outstrea
 /// * #SoundIoErrorIncompatibleDevice
 SOUNDIO_EXPORT int soundio_outstream_clear_buffer(struct SoundIoOutStream *outstream);
 
-/// If the underlying device supports pausing, this pauses the stream.
-/// SoundIoOutStream::write_callback may be called a few more times if the
-/// buffer is not full.
+/// If the underlying backend and device support pausing, this pauses the
+/// stream. SoundIoOutStream::write_callback may be called a few more times if
+/// the buffer is not full.
 /// Pausing might put the hardware into a low power state which is ideal if your
 /// software is silent for some time.
-/// This function may be called from any thread.
+/// This function may be called from any thread context, including
+/// SoundIoOutStream::write_callback.
 /// Pausing when already paused or unpausing when already unpaused has no
-/// effect and always returns SoundIoErrorNone.
+/// effect and returns #SoundIoErrorNone.
 ///
 /// Possible errors:
 /// * #SoundIoErrorBackendDisconnected
@@ -1021,6 +1039,8 @@ SOUNDIO_EXPORT int soundio_outstream_clear_buffer(struct SoundIoOutStream *outst
 /// * #SoundIoErrorIncompatibleDevice - device does not support
 ///   pausing/unpausing. This error code might not be returned even if the
 ///   device does not support pausing/unpausing.
+/// * #SoundIoErrorIncompatibleBackend - backend does not support
+///   pausing/unpausing.
 /// * #SoundIoErrorInvalid - outstream not opened and started
 SOUNDIO_EXPORT int soundio_outstream_pause(struct SoundIoOutStream *outstream, bool pause);
 
@@ -1037,6 +1057,9 @@ SOUNDIO_EXPORT int soundio_outstream_pause(struct SoundIoOutStream *outstream, b
 /// * #SoundIoErrorStreaming
 SOUNDIO_EXPORT int soundio_outstream_get_latency(struct SoundIoOutStream *outstream,
         double *out_latency);
+
+SOUNDIO_EXPORT int soundio_outstream_set_volume(struct SoundIoOutStream *outstream,
+        double volume);
 
 
 
@@ -1124,7 +1147,7 @@ SOUNDIO_EXPORT int soundio_instream_end_read(struct SoundIoInStream *instream);
 /// #SoundIoErrorIncompatibleDevice.
 /// This function may be called from any thread.
 /// Pausing when already paused or unpausing when already unpaused has no
-/// effect and always returns SoundIoErrorNone.
+/// effect and always returns #SoundIoErrorNone.
 ///
 /// Possible errors:
 /// * #SoundIoErrorBackendDisconnected
@@ -1144,11 +1167,12 @@ SOUNDIO_EXPORT int soundio_instream_get_latency(struct SoundIoInStream *instream
         double *out_latency);
 
 
+struct SoundIoRingBuffer;
+
 /// A ring buffer is a single-reader single-writer lock-free fixed-size queue.
 /// libsoundio ring buffers use memory mapping techniques to enable a
 /// contiguous buffer when reading or writing across the boundary of the ring
 /// buffer's capacity.
-struct SoundIoRingBuffer;
 /// `requested_capacity` in bytes.
 /// Returns `NULL` if and only if memory could not be allocated.
 /// Use ::soundio_ring_buffer_capacity to get the actual capacity, which might
