@@ -6,6 +6,6 @@ ${X}gcc -c -O2 \
 	src/soundio.c src/util.c src/os.c src/dummy.c src/channel_layout.c src/ring_buffer.c \
 	-Isrc -I.
 ${X}gcc *.o -shared -o ../../bin/$P/$D $L
-rm -f ../../bin/$P/$A
+rm -f      ../../bin/$P/$A
 ${X}ar rcs ../../bin/$P/$A *.o
 rm *.o
